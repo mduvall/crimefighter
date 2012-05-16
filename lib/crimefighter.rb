@@ -3,6 +3,7 @@ require 'nokogiri'
 require 'open-uri'
 require 'date'
 require 'json'
+require 'csv'
 
 class CrimeFighter
   URL = [
@@ -33,9 +34,6 @@ class CrimeFighter
           :address => address.content,
           :date => date.content
         }
-        puts "Crime: " + crime_name
-        puts "\tAddress: " + address.content
-        puts "\tDate: " + date.content
       end
     end  
     CRIMES
@@ -48,4 +46,17 @@ class CrimeFighter
       self.grab_sf_crime.to_json
     end
   end
+
+  def self.sf_crime_to_csv
+    CSV.open('crimes.csv', 'wb') do |csv|
+      self.grab_sf_crime if CRIMES.keys.length == 0
+      
+      CRIMES.each_key do |case_number|
+        crime = CRIMES[case_number]
+        csv << [crime[:crime], crime[:address], crime[:date]]
+      end
+    end
+  end
 end
+
+CrimeFighter.sf_crime_to_csv
