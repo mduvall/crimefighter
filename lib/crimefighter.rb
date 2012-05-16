@@ -16,6 +16,9 @@ class CrimeFighter
 		# Who love's ASP.NET generated URLs again...?
 		todays_url = URL[0] + last_week_date + URL[1] + today_date + URL[2]
 		html = Nokogiri::HTML(open(todays_url))
+		html.css("div.report table.report-grid tr").each do |node|
+			puts node.content
+		end
 	end
 end
 
