@@ -14,16 +14,16 @@ class CrimeFighter
 
   CRIMES = {}
 
-  def self.get_sf_crime_doc
+  def self.get_sf_crime_doc(days_back=7)
     today_date      = Time.now.to_date.strftime("%m/%d/%Y")
-    last_week_date  = (Time.now.to_date - 7).strftime("%m/%d/%Y")
+    last_week_date  = (Time.now.to_date - days_back).strftime("%m/%d/%Y")
     # Who love's ASP.NET generated URLs again...?
     todays_url      = URL[0] + last_week_date + URL[1] + today_date + URL[2]
     html            = Nokogiri::HTML(open(todays_url))
   end    
 
-  def self.populate_sf_crime
-    html = self.get_sf_crime_doc
+  def self.populate_sf_crime(days_back=7)
+    html = self.get_sf_crime_doc(days_back)
     html.css("div.report table.report-grid tr").each do |table_row|
       logo, crime, case_number, address, agency, date = table_row.css("td")
       if crime && address && case_number && date
@@ -38,9 +38,12 @@ class CrimeFighter
     CRIMES
   end
 
-  def self.sf_crime_json
-    self.populate_sf_crime if CRIMES.keys.length == 0
+  def self.sf_crime_json(write=false,days_back=7)
+    self.populate_sf_crime(days_back) if CRIMES.keys.length == 0
     CRIMES.to_json
+    if write
+      File.open("crimes.json", "wb") {|f| f.write(CRIMES.to_json)}
+    end
   end
 
   def self.sf_crime_to_csv
@@ -53,3 +56,5 @@ class CrimeFighter
     end
   end
 end
+
+CrimeFighter.sf_crime_json(true, 30)
