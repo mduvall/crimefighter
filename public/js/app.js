@@ -40,7 +40,9 @@ CrimeFighter.parseDateStrings = function(crimes) {
   var crimeArray = CrimeFighter.rawCrimeToArray(crimes);
   for (var i = 0; i < crimeArray.length; i++) {
     record = crimeArray[i];
-    record.date = d3.time.format(record.date);
+    fullDate = record.date.split(" ")[0];
+    splitDate = fullDate.split("/");
+    record.date = new Date(fullDate);
   }
   return crimeArray;
 }
