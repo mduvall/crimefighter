@@ -24,9 +24,13 @@ CrimeFighter.rawCrimeToArray = function() {
 
 CrimeFighter.setupDataContainers = function() {
   var crimeContainer = CrimeFighter.rawCrimeToArray();
-  CrimeFighter.crimeCrossfilter = crossfilter(crimeContainer);
+  if (crimeContainer) {
+    CrimeFighter.crimeCrossfilter = crossfilter(crimeContainer);
+  }
 };
 
 CrimeFighter.dimensionByCrimeType = function() {
-  return CrimeFigher.crimeCrossfilter.dimension(function(crime) { crime.crime; });
+  if (CrimeFighter.crimeCrossfilter) {
+    return CrimeFighter.crimeCrossfilter.dimension(function(crime) { crime.crime; });
+  }
 };
