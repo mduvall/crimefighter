@@ -46,6 +46,12 @@ class CrimeFighter
     end
   end
 
+  def self.read_crime_json
+    json_str = ""
+    f = File.open("crimes.json", "r").each { |l| json_str << l }
+    json_str
+  end
+
   def self.sf_crime_to_csv
     self.populate_sf_crime if CRIMES.keys.length == 0
     CSV.open('crimes-' + Time.now.to_date.to_s +  '.csv', 'wb') do |csv|
