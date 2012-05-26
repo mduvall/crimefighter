@@ -48,7 +48,7 @@ class CrimeFighter
 
   def self.sf_crime_to_csv
     self.populate_sf_crime if CRIMES.keys.length == 0
-    CSV.open('crimes.csv', 'wb') do |csv|
+    CSV.open('crimes-' + Time.now.to_date.to_s +  '.csv', 'wb') do |csv|
       CRIMES.each_key do |case_number|
         crime = CRIMES[case_number]
         csv << [crime[:crime], crime[:address], crime[:date]]
@@ -56,5 +56,3 @@ class CrimeFighter
     end
   end
 end
-
-CrimeFighter.sf_crime_json(true, 30)
