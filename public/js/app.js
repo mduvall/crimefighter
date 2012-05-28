@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  CrimeFighter.buildBarChart();
+  CrimeFighter.buildVisualization();
 });
 
 CrimeFighter = {};
@@ -47,12 +47,23 @@ CrimeFighter.parseDateStrings = function(crimes) {
   return crimeArray;
 }
 
-CrimeFighter.buildBarChart = function() {
+CrimeFighter.buildVisualization = function() {
+  var tableCellString = function(d) {
+    return "<td>" + d.crime + "</td>" +
+      "<td>" + d.address + "</td>" +
+      "<td>" + d.date.toDateString() + "</td>";
+  };
+
   d3.json("../crimes.json", function(crimes) { 
     var crimeArray = CrimeFighter.parseDateStrings(crimes);
     var crime = crossfilter(crimeArray),
-        all = crime.groupAll(); 
+        all = crime.groupAll(),
         date = crime.dimension(function(d) { return d3.time.day(d.date); }),
         dates = date.group();
+    d3.select("tbody").selectAll("tbody")
+      .data(crimeArray).enter().append("tr")
+      .html(function(d) { 
+        return tableCellString(d);
+      });
   });
 }
